@@ -1,0 +1,253 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog, ttk
+import random
+import string
+from tsp_solver import TSPSolver
+
+# Default values for the GUI
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+btn_width = 30
+btn_height = 1
+
+class TSPGUI(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Traveling Salesman Problem with Genetic Algorithm")
+        self.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
+
+        self.cities = {}
+        self.solver = TSPSolver(update_callback=self.update_stats)
+
+        self.create_widgets()
+
+
+    def create_widgets(self):
+        # Setup GUI components here (frames, labels, buttons, etc.)
+        self.control_frame = tk.Frame(self, bg="#2C3E50")
+        self.control_frame.pack(side=tk.LEFT, fill=tk.Y)
+
+        self.canvas_frame = tk.Frame(self)
+        self.canvas_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+
+        self.canvas = tk.Canvas(
+            self.canvas_frame, bg="#ECF0F1", scrollregion=(0, 0, 1000, 1000)
+        )
+        self.canvas.grid(row=0, column=0, sticky="nsew")
+        
+        self.canvas_scrollbar = ttk.Scrollbar(
+            self.canvas_frame, orient=tk.VERTICAL, command=self.canvas.yview
+        )
+        self.canvas_scrollbar.grid(row=0, column=1, sticky="ns")
+        self.canvas.config(yscrollcommand=self.canvas_scrollbar.set)
+
+        self.canvas_hscrollbar = ttk.Scrollbar(
+            self.canvas_frame, orient=tk.HORIZONTAL, command=self.canvas.xview
+        )
+        self.canvas_hscrollbar.grid(row=1, column=0, sticky="ew")
+        self.canvas.config(xscrollcommand=self.canvas_hscrollbar.set)
+
+        self.canvas_frame.grid_rowconfigure(0, weight=1)
+        self.canvas_frame.grid_columnconfigure(0, weight=1)
+
+        self.create_stats_labels()
+        self.create_buttons()
+        self.create_input_fields()
+
+    def create_stats_labels(self):
+        # Create labels to display the statistics
+        self.stats_frame = tk.Frame(self.control_frame, bg="#2C3E50")
+        self.stats_frame.pack(fill=tk.Y, padx=5, pady=10)
+
+        self.best_tour_label = tk.Label(self.stats_frame, text="Best Tour: ", anchor="w", wraplength=150, bg="#2C3E50", fg="white", font=("Arial", 10))
+        self.best_tour_label.grid(row=0, column=0, sticky="w", padx=5, pady=5)
+
+        self.distance_label = tk.Label(self.stats_frame, text="Distance: ", anchor="w", bg="#2C3E50", fg="white", font=("Arial", 10))
+        self.distance_label.grid(row=1, column=0, sticky="w", padx=5, pady=5) 
+
+        self.generation_label = tk.Label(self.stats_frame, text="Generation: ", anchor="w", bg="#2C3E50", fg="white", font=("Arial", 10))
+        self.generation_label.grid(row=2, column=0, sticky="w", padx=5, pady=5)
+
+        self.current_distance_label = tk.Label(self.stats_frame, text="Current Distance: ", anchor="w", bg="#2C3E50", fg="white", font=("Arial", 10))
+        self.current_distance_label.grid(row=3, column=0, sticky="w", padx=5, pady=5) 
+
+
+    def create_input_fields(self):
+        """Create input fields for population size, number of generations, and mutation rate."""
+        
+        input_frame = tk.Frame(self.control_frame, bg="#2C3E50")
+        input_frame.pack(fill=tk.Y, padx=5, pady=(80, 10))
+
+        # Population Size
+        self.pop_size_label = tk.Label(input_frame, text="Population Size:", bg="#2C3E50", fg="white", font=("Arial", 10))
+        self.pop_size_label.grid(row=0, column=0, sticky="w", padx=5, pady=5)
+        self.pop_size_entry = tk.Entry(input_frame, bg="#ffffff", fg="black")
+        self.pop_size_entry.grid(row=0, column=1, padx=5, pady=5)
+        self.pop_size_entry.insert(0, "50")  # Default value
+
+        # Number of Generations
+        self.gen_label = tk.Label(input_frame, text="Number of Generations:", bg="#2C3E50", fg="white", font=("Arial", 10))
+        self.gen_label.grid(row=1, column=0, sticky="w", padx=5, pady=5)
+        self.gen_entry = tk.Entry(input_frame, bg="#ffffff", fg="black")
+        self.gen_entry.grid(row=1, column=1, padx=5, pady=5)
+        self.gen_entry.insert(0, "20")
+
+        # Mutation Rate
+        self.mutation_rate_label = tk.Label(input_frame, text="Mutation Rate:", bg="#2C3E50", fg="white", font=("Arial", 10))
+        self.mutation_rate_label.grid(row=2, column=0, sticky="w", padx=5, pady=5)
+        self.mutation_rate_entry = tk.Entry(input_frame, bg="#ffffff", fg="black")
+        self.mutation_rate_entry.grid(row=2, column=1, padx=5, pady=5)
+        self.mutation_rate_entry.insert(0, "0.01")  
+
+        # Add a button to confirm the values
+        self.set_params_btn = tk.Button(
+            input_frame,
+            text="Set Parameters",
+            command=self.set_parameters,
+            bg="#3498DB",
+            fg="white",
+            width=btn_width,
+            height=btn_height
+        )
+        self.set_params_btn.grid(row=3, column=0, columnspan=2, pady=10)
+
+
+    def set_parameters(self):
+        """Sets the population size, generations, and mutation rate based on user input."""
+        try:
+            # Get the values from the entry widgets
+            population_size = int(self.pop_size_entry.get())
+            generations = int(self.gen_entry.get())
+            mutation_rate = float(self.mutation_rate_entry.get())
+
+            # Validate the inputs
+            if population_size <= 0 or generations <= 0 or not (0 <= mutation_rate <= 1):
+                messagebox.showerror("Invalid Input", "Please enter valid values for population size, generations, and mutation rate.")
+                return
+
+            # Pass these values to the solver or update the solver's parameters
+            self.solver.set_parameters(population_size, generations, mutation_rate)
+
+            # Show a confirmation message
+            messagebox.showinfo("Parameters Set", "Parameters have been updated successfully.")
+
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Please enter valid numerical values.")
+
+    def create_buttons(self):
+        self.buttons_frame = tk.Frame(self.control_frame, bg="#2C3E50")
+        self.buttons_frame.pack(side=tk.BOTTOM, fill=tk.X)
+
+        # Start the Algorithm
+        self.start_btn = tk.Button(
+            self.buttons_frame,
+            text="Start",
+            command=self.run_genetic_algorithm,
+            width=btn_width,
+            height=btn_height,
+            bg="#1ABC9C",
+            fg="white"
+        )
+        self.start_btn.pack(pady=10)
+
+        # Add City
+        self.add_city_btn = tk.Button(
+            self.buttons_frame,
+            text="Add City",
+            command=self.add_random_city,
+            width=btn_width,
+            height=btn_height,
+            bg="#E67E22",
+            fg="white"
+        )
+        self.add_city_btn.pack(pady=10)
+
+        # Remove City
+        self.remove_city_btn = tk.Button(
+            self.buttons_frame,
+            text="Remove City",
+            command=self.remove_city,
+            width=btn_width,
+            height=btn_height,
+            bg="#E74C3C",
+            fg="white"
+        )
+        self.remove_city_btn.pack(pady=10)
+
+    def run_genetic_algorithm(self):
+        """Starts the genetic algorithm."""
+        # Retrieve values from the entry fields
+        population_size = int(self.pop_size_entry.get())
+        generations = int(self.gen_entry.get())
+        mutation_rate = float(self.mutation_rate_entry.get())
+
+        # Validate inputs before running the algorithm
+        if population_size <= 0 or generations <= 0 or not (0 <= mutation_rate <= 1):
+            messagebox.showerror("Invalid Input", "Please enter valid values for population size, generations, and mutation rate.")
+            return
+
+        # Ensure population size is at least as large as the number of cities
+        if population_size < len(self.cities):
+            messagebox.showerror("Invalid Population Size", "Population size must be greater than or equal to the number of cities.")
+            return
+
+        # Pass the cities and canvas to the solver
+        self.solver.set_cities(self.cities)
+        self.solver.set_canvas(self.canvas)
+
+        # Call the run_algorithm method with the values entered by the user
+        self.solver.run_algorithm(population_size, generations + 1, mutation_rate)
+
+
+    def update_stats(self, best_tour, current_distance, generation):
+        self.best_tour_label.config(text=f"Best Tour: {best_tour}")
+        self.distance_label.config(text=f"Distance: {current_distance}")
+        self.generation_label.config(text=f"Generation: {generation}")
+        self.current_distance_label.config(text=f"Current Distance: {current_distance}")
+
+    def add_random_city(self):
+        alphabet = string.ascii_uppercase
+        existing_cities = set(self.cities.keys())
+
+        remaining_cities = [city for city in alphabet if city not in existing_cities]
+
+        if not remaining_cities:
+            messagebox.showinfo("No Cities to Add", "All cities (A-Z) have already been added. Please remove some cities to add new ones.")
+            return
+
+        city_name = remaining_cities[0]
+        x = random.randint(50, 500)
+        y = random.randint(50, 450)
+
+        self.add_city(city_name, x, y)
+
+    def add_city(self, city_name, x, y):
+        self.cities[city_name] = (x, y)
+        self.draw_cities()
+
+    def remove_city(self):
+        if not self.cities:
+            messagebox.showwarning("Warning", "No cities to remove.")
+            return
+
+        city_name = random.choice(list(self.cities.keys()))
+        del self.cities[city_name]
+        self.draw_cities()
+
+    def draw_cities(self):
+        self.canvas.delete("all")
+
+        for city, (x, y) in self.cities.items():
+            self.canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="blue", width=0, tags=city)
+            self.canvas.create_text(x, y - 15, text=city, font=("Arial", 10, "bold"), tags=city)
+
+        for city1 in self.cities:
+            for city2 in self.cities:
+                if city1 != city2:
+                    x1, y1 = self.cities[city1]
+                    x2, y2 = self.cities[city2]
+                    self.canvas.create_line(x1, y1, x2, y2, fill="gray", width=1, smooth=True)
+
+if __name__ == "__main__":
+    app = TSPGUI()
+    app.mainloop()
