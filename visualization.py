@@ -146,7 +146,7 @@ class TSPGUI(tk.Tk):
             return False
         return True
 
-    def update_stats(self, best_tour, current_distance, generation):
+    def update_stats(self, best_tour, current_distance):
         """Update the labels with the best tour and its distance."""
         self.best_tour_label.config(text=f"Best Tour: {best_tour}")
         self.distance_label.config(text=f"Distance: {current_distance}")

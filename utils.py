@@ -34,7 +34,7 @@ def get_best_solution(cities, population):
     best_distance = calculate_distance(cities, best_tour)
     return best_tour, best_distance
 
-def update_visuals(canvas, root, update_callback, cities, best_tour, best_distance, current_best_tour, generation):
+def update_visuals(canvas, root, update_callback, cities, best_tour, best_distance):
     """Update the visual components and labels."""
     
     # Ensure best_tour starts and ends with the same city
@@ -47,22 +47,14 @@ def update_visuals(canvas, root, update_callback, cities, best_tour, best_distan
 
     # If you have a callback to update the visuals, call it
     if update_callback:
-        update_callback(best_tour, best_distance, generation)
+        update_callback(best_tour, best_distance)
 
-    # Draw the current path
-    if current_best_tour:
-        draw_path(canvas, cities, current_best_tour, color="green")
-
-    # Update the labels for best tour, distance, generation, and current distance
+    # Update the labels for best tour and best distance
     if root:
         best_tour_label = root.nametowidget("best_tour_label")
         best_distance_label = root.nametowidget("best_distance_label")
-        generation_label = root.nametowidget("generation_label")
-        current_distance_label = root.nametowidget("current_distance_label")
 
         # Update the best tour label with the corrected tour
         best_tour_label.config(text=f"Best Tour: {' -> '.join(best_tour)}")  # Display the best tour as a readable string
 
         best_distance_label.config(text=f"Best Distance: {best_distance:.2f}")
-        generation_label.config(text=f"Generation: {generation + 1}")
-        current_distance_label.config(text=f"Current Distance: {calculate_distance(cities, current_best_tour):.2f}")
