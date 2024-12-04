@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 import random
 import string
+import time
 from tsp_solver import TSPSolver
 
 # Constants
