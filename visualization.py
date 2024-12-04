@@ -76,7 +76,7 @@ class TSPGUI(tk.Tk):
         self.pop_size_label.grid(row=0, column=0, sticky="w", padx=5, pady=5)
         self.pop_size_entry = tk.Entry(input_frame, bg="#ffffff", fg="black")
         self.pop_size_entry.grid(row=0, column=1, padx=5, pady=5)
-        self.pop_size_entry.insert(0, "50")  # Default value
+        self.pop_size_entry.insert(0, "120")  # Default value
 
         # Number of Generations
         self.gen_label = tk.Label(input_frame, text="Number of Generations:", bg="#34495E", fg="white", font=("Arial", 10))
@@ -90,7 +90,7 @@ class TSPGUI(tk.Tk):
         self.mutation_rate_label.grid(row=2, column=0, sticky="w", padx=5, pady=5)
         self.mutation_rate_entry = tk.Entry(input_frame, bg="#ffffff", fg="black")
         self.mutation_rate_entry.grid(row=2, column=1, padx=5, pady=5)
-        self.mutation_rate_entry.insert(0, "0.01")
+        self.mutation_rate_entry.insert(0, "0.1")
 
     def create_buttons(self):
         """Create action buttons for controlling the simulation."""
