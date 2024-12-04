@@ -99,41 +99,6 @@ class TSPGUI(tk.Tk):
         self.mutation_rate_entry.grid(row=2, column=1, padx=5, pady=5)
         self.mutation_rate_entry.insert(0, "0.01")  
 
-        # Add a button to confirm the values
-        self.set_params_btn = tk.Button(
-            input_frame,
-            text="Set Parameters",
-            command=self.set_parameters,
-            bg="#3498DB",
-            fg="white",
-            width=btn_width,
-            height=btn_height
-        )
-        self.set_params_btn.grid(row=3, column=0, columnspan=2, pady=10)
-
-
-    def set_parameters(self):
-        """Sets the population size, generations, and mutation rate based on user input."""
-        try:
-            # Get the values from the entry widgets
-            population_size = int(self.pop_size_entry.get())
-            generations = int(self.gen_entry.get())
-            mutation_rate = float(self.mutation_rate_entry.get())
-
-            # Validate the inputs
-            if population_size <= 0 or generations <= 0 or not (0 <= mutation_rate <= 1):
-                messagebox.showerror("Invalid Input", "Please enter valid values for population size, generations, and mutation rate.")
-                return
-
-            # Pass these values to the solver or update the solver's parameters
-            self.solver.set_parameters(population_size, generations, mutation_rate)
-
-            # Show a confirmation message
-            messagebox.showinfo("Parameters Set", "Parameters have been updated successfully.")
-
-        except ValueError:
-            messagebox.showerror("Invalid Input", "Please enter valid numerical values.")
-
     def create_buttons(self):
         self.buttons_frame = tk.Frame(self.control_frame, bg="#2C3E50")
         self.buttons_frame.pack(side=tk.BOTTOM, fill=tk.X)
