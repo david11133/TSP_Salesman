@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog, ttk
+from tkinter import messagebox, ttk
 import random
 import string
 from tsp_solver import TSPSolver
@@ -7,8 +7,8 @@ from tsp_solver import TSPSolver
 # Default values for the GUI
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
-btn_width = 30
-btn_height = 1
+BTN_WIDTH = 30
+BTN_HEIGHT = 1
 
 class TSPGUI(tk.Tk):
     def __init__(self):
@@ -21,10 +21,9 @@ class TSPGUI(tk.Tk):
 
         self.create_widgets()
 
-
     def create_widgets(self):
-        # Setup GUI components here (frames, labels, buttons, etc.)
-        self.control_frame = tk.Frame(self, bg="#2C3E50")
+        """Creates and arranges the main UI components."""
+        self.control_frame = tk.Frame(self, bg="#34495E")
         self.control_frame.pack(side=tk.LEFT, fill=tk.Y)
 
         self.canvas_frame = tk.Frame(self)
@@ -51,56 +50,51 @@ class TSPGUI(tk.Tk):
         self.canvas_frame.grid_columnconfigure(0, weight=1)
 
         self.create_stats_labels()
-        self.create_buttons()
         self.create_input_fields()
+        self.create_buttons()
 
     def create_stats_labels(self):
-        # Create labels to display the statistics
-        self.stats_frame = tk.Frame(self.control_frame, bg="#2C3E50")
+        """Creates labels to display statistics."""
+        self.stats_frame = tk.Frame(self.control_frame, bg="#34495E")
         self.stats_frame.pack(fill=tk.Y, padx=5, pady=10)
 
-        self.best_tour_label = tk.Label(self.stats_frame, text="Best Tour: ", anchor="w", wraplength=150, bg="#2C3E50", fg="white", font=("Arial", 10))
+        # Best Tour Label with bigger font and bold
+        self.best_tour_label = tk.Label(self.stats_frame, text="Best Tour: ", anchor="w", wraplength=150, bg="#34495E", fg="white", font=("Arial", 12, "bold"))
         self.best_tour_label.grid(row=0, column=0, sticky="w", padx=5, pady=5)
 
-        self.distance_label = tk.Label(self.stats_frame, text="Distance: ", anchor="w", bg="#2C3E50", fg="white", font=("Arial", 10))
-        self.distance_label.grid(row=1, column=0, sticky="w", padx=5, pady=5) 
-
-        self.generation_label = tk.Label(self.stats_frame, text="Generation: ", anchor="w", bg="#2C3E50", fg="white", font=("Arial", 10))
-        self.generation_label.grid(row=2, column=0, sticky="w", padx=5, pady=5)
-
-        self.current_distance_label = tk.Label(self.stats_frame, text="Current Distance: ", anchor="w", bg="#2C3E50", fg="white", font=("Arial", 10))
-        self.current_distance_label.grid(row=3, column=0, sticky="w", padx=5, pady=5) 
-
+        # Distance Label with bigger font and bold
+        self.distance_label = tk.Label(self.stats_frame, text="Distance: ", anchor="w", bg="#34495E", fg="white", font=("Arial", 12, "bold"))
+        self.distance_label.grid(row=1, column=0, sticky="w", padx=5, pady=5)
 
     def create_input_fields(self):
         """Create input fields for population size, number of generations, and mutation rate."""
-        
-        input_frame = tk.Frame(self.control_frame, bg="#2C3E50")
+        input_frame = tk.Frame(self.control_frame, bg="#34495E")
         input_frame.pack(fill=tk.Y, padx=5, pady=(80, 10))
 
         # Population Size
-        self.pop_size_label = tk.Label(input_frame, text="Population Size:", bg="#2C3E50", fg="white", font=("Arial", 10))
+        self.pop_size_label = tk.Label(input_frame, text="Population Size:", bg="#34495E", fg="white", font=("Arial", 10))
         self.pop_size_label.grid(row=0, column=0, sticky="w", padx=5, pady=5)
         self.pop_size_entry = tk.Entry(input_frame, bg="#ffffff", fg="black")
         self.pop_size_entry.grid(row=0, column=1, padx=5, pady=5)
         self.pop_size_entry.insert(0, "50")  # Default value
 
         # Number of Generations
-        self.gen_label = tk.Label(input_frame, text="Number of Generations:", bg="#2C3E50", fg="white", font=("Arial", 10))
+        self.gen_label = tk.Label(input_frame, text="Number of Generations:", bg="#34495E", fg="white", font=("Arial", 10))
         self.gen_label.grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.gen_entry = tk.Entry(input_frame, bg="#ffffff", fg="black")
         self.gen_entry.grid(row=1, column=1, padx=5, pady=5)
         self.gen_entry.insert(0, "20")
 
         # Mutation Rate
-        self.mutation_rate_label = tk.Label(input_frame, text="Mutation Rate:", bg="#2C3E50", fg="white", font=("Arial", 10))
+        self.mutation_rate_label = tk.Label(input_frame, text="Mutation Rate:", bg="#34495E", fg="white", font=("Arial", 10))
         self.mutation_rate_label.grid(row=2, column=0, sticky="w", padx=5, pady=5)
         self.mutation_rate_entry = tk.Entry(input_frame, bg="#ffffff", fg="black")
         self.mutation_rate_entry.grid(row=2, column=1, padx=5, pady=5)
-        self.mutation_rate_entry.insert(0, "0.01")  
+        self.mutation_rate_entry.insert(0, "0.01")
 
     def create_buttons(self):
-        self.buttons_frame = tk.Frame(self.control_frame, bg="#2C3E50")
+        """Create action buttons for controlling the simulation."""
+        self.buttons_frame = tk.Frame(self.control_frame, bg="#34495E")
         self.buttons_frame.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Start the Algorithm
@@ -108,8 +102,8 @@ class TSPGUI(tk.Tk):
             self.buttons_frame,
             text="Start",
             command=self.run_genetic_algorithm,
-            width=btn_width,
-            height=btn_height,
+            width=BTN_WIDTH,
+            height=BTN_HEIGHT,
             bg="#1ABC9C",
             fg="white"
         )
@@ -120,8 +114,8 @@ class TSPGUI(tk.Tk):
             self.buttons_frame,
             text="Add City",
             command=self.add_random_city,
-            width=btn_width,
-            height=btn_height,
+            width=BTN_WIDTH,
+            height=BTN_HEIGHT,
             bg="#E67E22",
             fg="white"
         )
@@ -132,8 +126,8 @@ class TSPGUI(tk.Tk):
             self.buttons_frame,
             text="Remove City",
             command=self.remove_city,
-            width=btn_width,
-            height=btn_height,
+            width=BTN_WIDTH,
+            height=BTN_HEIGHT,
             bg="#E74C3C",
             fg="white"
         )
@@ -163,14 +157,13 @@ class TSPGUI(tk.Tk):
         # Call the run_algorithm method with the values entered by the user
         self.solver.run_algorithm(population_size, generations + 1, mutation_rate)
 
-
     def update_stats(self, best_tour, current_distance, generation):
+        """Update the GUI with the best tour and its distance."""
         self.best_tour_label.config(text=f"Best Tour: {best_tour}")
         self.distance_label.config(text=f"Distance: {current_distance}")
-        self.generation_label.config(text=f"Generation: {generation}")
-        self.current_distance_label.config(text=f"Current Distance: {current_distance}")
 
     def add_random_city(self):
+        """Add a random city to the canvas."""
         alphabet = string.ascii_uppercase
         existing_cities = set(self.cities.keys())
 
@@ -187,10 +180,12 @@ class TSPGUI(tk.Tk):
         self.add_city(city_name, x, y)
 
     def add_city(self, city_name, x, y):
+        """Add a new city to the list."""
         self.cities[city_name] = (x, y)
         self.draw_cities()
 
     def remove_city(self):
+        """Remove a random city from the list."""
         if not self.cities:
             messagebox.showwarning("Warning", "No cities to remove.")
             return
@@ -200,6 +195,7 @@ class TSPGUI(tk.Tk):
         self.draw_cities()
 
     def draw_cities(self):
+        """Redraw the cities and connections."""
         self.canvas.delete("all")
 
         for city, (x, y) in self.cities.items():
