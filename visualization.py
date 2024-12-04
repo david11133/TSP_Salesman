@@ -8,17 +8,17 @@ from tsp_solver import TSPSolver
 WINDOW_DIMENSIONS = {"width": 800, "height": 600}
 BUTTON_SIZE = {"width": 30, "height": 1}
 COLORS = {
-    "control_bg": "#2C3E50",  # Dark Slate Blue (Modern, sleek background for control panel)
-    "canvas_bg": "#F4F6F7",   # Light Grayish White (Subtle and soft background for the canvas)
-    "best_tour": "#EAF0F1",    # Very Light Gray (Light contrast for the best tour text)
-    "distance": "#EAF0F1",     # Very Light Gray (Light contrast for the distance text)
-    "btn_start": "#3498DB",    # Vivid Blue (Clean, modern button for start)
-    "btn_add": "#F39C12",      # Vibrant Yellow Orange (Eye-catching add city button)
-    "btn_remove": "#E74C3C",   # Soft Red (Intuitive warning color for remove city)
-    "node": "#16A085",         # Soft Teal (Modern, calm, and easy on the eyes for nodes)
-    "edge": "#D5DBDB",         # Light Silver Gray (Subtle edges for a clean look)
-    "highlight_node": "#FF5733",  # Warm Coral (Bright and noticeable for highlighting nodes)
-    "highlight_edge": "#1ABC9C"   # Vibrant Mint Green (Clear, fresh color for highlighted edges)
+    "control_bg": "#2C3E50",  
+    "canvas_bg": "#F4F6F7",  
+    "best_tour": "#EAF0F1",   
+    "distance": "#EAF0F1",    
+    "btn_start": "#3498DB",    
+    "btn_add": "#F39C12",      
+    "btn_remove": "#E74C3C",   
+    "node": "#16A085",         
+    "edge": "gray",         
+    "highlight_node": "#FF5733",  
+    "highlight_edge": "#1ABC9C"   
 }
 
 
